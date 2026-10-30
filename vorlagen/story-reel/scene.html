@@ -1,0 +1,534 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:540px;height:960px;overflow:hidden;background:#000}
+body{font-family:"Inter","Inter Display",sans-serif;-webkit-font-smoothing:antialiased}
+#stage{position:relative;width:540px;height:960px;overflow:hidden}
+svg{position:absolute;left:0;top:0}
+.mono{font-family:"DejaVu Sans Mono",monospace}
+#sub{position:absolute;left:20px;right:20px;text-align:center;font-family:"Inter Display","Inter",sans-serif;font-weight:900;font-size:40px;line-height:1.05;letter-spacing:.01em;text-transform:uppercase;color:#fff;
+ word-spacing:.16em;-webkit-text-stroke:7px #0b0f17;paint-order:stroke fill;z-index:50}
+#sub b{color:#FF7A1A;font-weight:900}
+#pitch{position:absolute;inset:0;background:#0a1020;overflow:hidden;display:none}
+#pitch .grid{position:absolute;inset:-80px;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:40px 40px}
+#pitch .glow{position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,26,.28),rgba(255,107,26,0) 65%)}
+#phead{position:absolute;top:44px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:10px;color:#cfd6e4;font-weight:700;font-size:15px;letter-spacing:.18em}
+.dot{width:14px;height:14px;border-radius:50%;background:#FF6B1A;box-shadow:0 0 18px rgba(255,107,26,.7)}
+.card{position:absolute;left:30px;right:30px;top:120px;height:640px;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0}
+.it{opacity:0}
+.label{color:#FF7A1A;font-weight:800;font-size:15px;letter-spacing:.22em;margin-bottom:14px}
+.h1{color:#fff;font-family:"Inter Display";font-weight:900;font-size:50px;line-height:1.02;text-align:center;letter-spacing:-.01em}
+.h1 em{font-style:normal;color:#FF7A1A}
+.muted{color:#9aa6bd;font-size:19px;font-weight:600;text-align:center}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:26px;max-width:470px}
+.pill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#e9edf5;font-weight:700;font-size:19px;padding:10px 16px;border-radius:999px}
+.pill.o{background:rgba(255,107,26,.16);border-color:rgba(255,107,26,.55);color:#ffb38a}
+.panel{background:linear-gradient(180deg,#141c30,#0f1626);border:1px solid rgba(255,255,255,.1);border-radius:22px;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;width:440px}
+.tile{height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#fff;font-weight:800;font-size:21px}
+.tags{display:flex;align-items:center;gap:12px;margin-top:22px;color:#9aa6bd;font-weight:700;font-size:18px}
+.tag{background:#FF6B1A;color:#fff;font-weight:900;letter-spacing:.12em;font-size:17px;padding:10px 16px;border-radius:10px}
+.chat{width:440px;padding:20px;position:relative}
+.bub{background:#24304a;color:#dfe5f0;font-size:18px;font-weight:600;padding:10px 14px;border-radius:16px 16px 16px 4px;margin:8px 0;width:max-content;max-width:330px}
+.bub.r{margin-left:auto;background:#1d5c3a;border-radius:16px 16px 4px 16px}
+.stamp{position:absolute;right:18px;top:42px;border:4px solid #ff3b3b;color:#ff3b3b;font-weight:900;font-size:30px;letter-spacing:.12em;padding:4px 12px;border-radius:8px;transform:rotate(-12deg)}
+.form{width:440px;padding:18px 20px;margin-top:16px;border-color:rgba(255,107,26,.6)}
+.frow{display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid rgba(255,255,255,.08);color:#fff;font-weight:700;font-size:19px}
+.frow:last-child{border-bottom:0}
+.size{display:flex;align-items:center;gap:10px;color:#ffb38a}
+.ck{width:24px;height:24px;border-radius:50%;background:#22c06a;display:flex;align-items:center;justify-content:center}
+.pkgs{display:flex;gap:16px;margin-top:30px}
+.pkg{width:132px;height:190px;position:relative}
+.cta{margin-top:30px;background:#FF6B1A;color:#fff;font-family:"Inter Display";font-weight:900;font-size:40px;letter-spacing:.08em;padding:20px 34px;border-radius:18px;display:flex;align-items:center;gap:16px}
+.checks{margin-top:26px;display:flex;flex-direction:column;gap:14px}
+.chk{display:flex;align-items:center;gap:12px;color:#e9edf5;font-size:22px;font-weight:700}
+.tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:456px;margin-top:8px}
+.tile3{height:128px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;font-weight:800;font-size:17px}
+.tile3.more{grid-column:span 2;background:linear-gradient(135deg,#FF6B1A,#ff9a4d);border-radius:22px;font-family:"Inter Display";font-size:26px;font-weight:900;box-shadow:0 0 30px rgba(255,107,26,.45)}
+.marquee{width:600px;margin-top:20px;overflow:hidden;white-space:nowrap}
+.mtrack{display:inline-flex;gap:10px}
+.mtrack span{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#e9edf5;font-weight:700;font-size:17px;padding:9px 15px;border-radius:999px}
+.vrow{display:flex;align-items:center;gap:8px;margin-top:10px}
+.vpanel{width:212px;padding:12px 0 18px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.vlab{color:#fff;font-weight:900;letter-spacing:.14em;font-size:19px}
+.vor{color:#9aa6bd;font-weight:800;font-size:16px;width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;background:#0a1020}
+.igbox{width:450px;margin-top:30px;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.ighead{color:#fff;font-weight:800;font-size:16px;text-align:center;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.1)}
+.av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#FF6B1A,#ffb38a);flex:none}
+.iginput{display:flex;align-items:center;gap:12px}
+.igfield{flex:1;background:#1b2438;border-radius:999px;padding:11px 16px;color:#fff;font-weight:900;font-size:22px;letter-spacing:.06em;min-height:48px}
+#caret{color:#FF6B1A;font-weight:400}
+.igpost{color:#4b5a78;font-weight:800;font-size:17px}
+.igposted{display:flex;align-items:center;gap:12px;opacity:0}
+.igname{color:#9aa6bd;font-size:13px;font-weight:700}
+.igtext{color:#fff;font-weight:900;font-size:22px;letter-spacing:.06em}
+#pdots{position:absolute;top:76px;left:0;right:0;display:flex;justify-content:center;gap:6px}
+#pdots i{display:block;width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.15)}
+</style></head>
+<body><div id="stage">
+
+<svg id="world" width="540" height="960" viewBox="0 0 540 960">
+ <defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8f0"/><stop offset="1" stop-color="#cdeeff"/></linearGradient>
+  <symbol id="qr" viewBox="-3 -3 31 31"><rect x="-3" y="-3" width="31" height="31" fill="#fff"/><path id="qrpath" fill="#111"/></symbol>
+  <radialGradient id="fire"><stop offset="0" stop-color="#fff3b0"/><stop offset=".45" stop-color="#ffcf3f"/><stop offset="1" stop-color="#ff6a1a"/></radialGradient>
+ </defs>
+ <g id="cam">
+ <rect x="-400" y="-300" width="1340" height="1560" fill="url(#sky)"/>
+ <g id="sun"><circle cx="440" cy="190" r="62" fill="#ffe27a" opacity=".45"/><circle cx="440" cy="190" r="44" fill="#ffd23f"/></g>
+ <g id="cloud" fill="#fff"><ellipse cx="120" cy="170" rx="58" ry="24"/><ellipse cx="96" cy="152" rx="30" ry="24"/><ellipse cx="140" cy="148" rx="34" ry="28"/></g>
+ <g id="cloud2" fill="#fff" opacity=".85"><ellipse cx="330" cy="120" rx="40" ry="15"/><ellipse cx="345" cy="108" rx="22" ry="16"/></g>
+ <polygon points="-400,610 -200,500 -40,560 90,440 170,520 250,400 360,560 420,470 600,520 760,450 940,610" fill="#9aa8bd"/>
+ <polygon points="250,400 280,445 262,440 250,455 236,438 222,443" fill="#fff"/>
+ <polygon points="90,440 112,468 98,466 88,476 76,462 68,465" fill="#fff"/>
+ <polygon points="420,470 444,500 430,498 420,508 408,496 398,500" fill="#fff"/>
+ <polygon points="-400,620 -150,560 -40,600 60,540 160,600 300,520 430,600 590,540 760,590 940,560 940,620" fill="#b6c1d1"/>
+ <rect x="-400" y="600" width="1340" height="700" fill="#ead7a9"/>
+ <ellipse cx="330" cy="708" rx="210" ry="20" fill="#c9b07c" opacity=".7"/>
+ <g stroke="#9db35a" stroke-width="3" stroke-linecap="round" id="grass"></g>
+
+ <g id="soldier">
+  <rect x="80" y="650" width="13" height="52" rx="4" fill="#4b5a2e"/><rect x="98" y="650" width="13" height="52" rx="4" fill="#556535"/>
+  <rect x="76" y="696" width="19" height="9" rx="3" fill="#2b2b2b"/><rect x="96" y="696" width="19" height="9" rx="3" fill="#2b2b2b"/>
+  <rect x="74" y="588" width="42" height="68" rx="10" fill="#66763d"/>
+  <rect x="74" y="640" width="42" height="7" fill="#3f4a25"/>
+  <rect x="79" y="592" width="9" height="56" rx="4" fill="#5a6934"/>
+  <circle cx="95" cy="570" r="17" fill="#f2c9a0"/>
+  <path d="M76 568 a19 19 0 0 1 38 0 z" fill="#55652f"/><rect x="73" y="565" width="44" height="6" rx="3" fill="#4a5829"/>
+  <circle cx="101" cy="574" r="2" fill="#2b2b2b"/>
+  <g id="arm"><rect x="104" y="597" width="52" height="12" rx="6" fill="#66763d"/><circle cx="156" cy="603" r="7" fill="#f2c9a0"/></g>
+ </g>
+
+ <g id="tank">
+  <rect x="175" y="640" width="312" height="62" rx="31" fill="#3e4a2b"/>
+  <g id="wheels" fill="#6f7752" stroke="#2c341d" stroke-width="4"></g>
+  <polygon points="188,646 202,598 468,598 484,646" fill="#6f7d3c"/>
+  <rect x="204" y="589" width="256" height="14" rx="4" fill="#808f48"/>
+  <line x1="290" y1="548" x2="276" y2="482" stroke="#3a4423" stroke-width="3"/>
+  <rect x="395" y="560" width="128" height="13" rx="4" fill="#5d6a32"/>
+  <rect x="518" y="555" width="16" height="23" rx="3" fill="#4d5829"/>
+  <rect x="262" y="544" width="138" height="52" rx="18" fill="#7a8a42"/>
+  <rect x="298" y="534" width="44" height="13" rx="5" fill="#66753a"/>
+  <g id="stickers"></g>
+ </g>
+ <g id="smoke"></g>
+ <g id="fireballs"></g>
+ <g id="bombs"></g>
+ <g id="beam" opacity="0">
+  <polygon id="beampoly" points="330,350 170,610 500,610" fill="#59ffb0" opacity=".22"/>
+  <rect id="scanline" x="170" y="560" width="350" height="4" fill="#59ffb0"/>
+  <rect id="scanglow" x="170" y="548" width="350" height="28" fill="#59ffb0" opacity=".18"/>
+ </g>
+ <g id="drones"></g>
+ </g>
+ <rect id="flash" width="540" height="960" fill="#fff" opacity="0"/>
+</svg>
+
+<svg id="hud" width="540" height="960" viewBox="0 0 540 960" style="display:none">
+ <defs>
+  <pattern id="qrtile" width="92" height="92" patternUnits="userSpaceOnUse"><use href="#qr" x="5" y="5" width="82" height="82"/></pattern>
+  <radialGradient id="vig"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></radialGradient>
+  <pattern id="lines" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="#000" opacity=".18"/></pattern>
+ </defs>
+ <g id="hudpan"><rect x="-200" y="-200" width="940" height="1360" fill="url(#qrtile)"/></g>
+ <rect width="540" height="960" fill="#0c2a1c" opacity=".38"/>
+ <rect width="540" height="960" fill="url(#lines)"/>
+ <rect width="540" height="960" fill="url(#vig)"/>
+ <g stroke="#e9fff3" stroke-width="3" fill="none" opacity=".9">
+  <path d="M28 70 v-36 h36"/><path d="M512 70 v-36 h-36"/><path d="M28 890 v36 h36"/><path d="M512 890 v36 h-36"/>
+  <line x1="270" y1="400" x2="270" y2="440"/><line x1="270" y1="520" x2="270" y2="560"/><line x1="190" y1="480" x2="230" y2="480"/><line x1="310" y1="480" x2="350" y2="480"/>
+ </g>
+ <g class="mono" fill="#e9fff3" font-size="16" font-weight="700">
+  <text x="44" y="100">DROHNEN-CAM 07</text>
+  <text x="44" y="124" id="alt">HÖHE 49,2 M</text>
+  <circle id="rec" cx="420" cy="95" r="7" fill="#ff3b3b"/><text x="434" y="101">REC</text>
+  <text x="270" y="874" text-anchor="middle" font-size="14">47.05° N • 8.31° O • SIGNAL 94%</text>
+ </g>
+ <rect id="ret" x="120" y="330" width="300" height="300" fill="none" stroke="#fff" stroke-width="4"/>
+ <g id="found" opacity="0">
+  <rect x="160" y="268" width="220" height="40" rx="8" fill="#FF6B1A"/>
+  <text x="270" y="295" text-anchor="middle" class="mono" font-size="18" font-weight="700" fill="#fff">QR-CODE ERKANNT</text>
+ </g>
+ <g id="popup" opacity="0">
+  <rect x="60" y="640" width="420" height="150" rx="18" fill="#0d1424" stroke="#FF6B1A" stroke-width="2"/>
+  <text x="90" y="680" class="mono" font-size="15" font-weight="700" fill="#9fb0c8">LINK WIRD GEÖFFNET</text>
+  <rect x="90" y="696" width="360" height="44" rx="22" fill="#1b2438"/>
+  <circle cx="114" cy="718" r="8" fill="#FF6B1A"/>
+  <text x="134" y="725" font-size="20" font-weight="800" fill="#fff" font-family="Inter">https://crewtex.ch</text>
+  <rect x="90" y="756" width="360" height="8" rx="4" fill="#1b2438"/>
+  <rect id="pbar" x="90" y="756" width="0" height="8" rx="4" fill="#FF6B1A"/>
+ </g>
+</svg>
+
+<div id="pitch">
+ <div class="grid" id="pgrid"></div>
+ <div class="glow" id="glow1" style="left:-160px;top:-120px"></div>
+ <div class="glow" id="glow2" style="right:-200px;bottom:-100px"></div>
+ <div id="pdots"></div>
+ <div id="phead"><div class="dot"></div>CREWTEX • TEAMKLEIDUNG MIT LOGO</div>
+
+ <div class="card" id="c0">
+  <div class="it" data-d="0" style="display:flex;align-items:center;gap:18px">
+   <div class="dot" style="width:42px;height:42px"></div>
+   <div style="color:#fff;font-family:'Inter Display';font-weight:900;font-size:82px;letter-spacing:.04em">CREWTEX</div>
+  </div>
+  <div class="it" data-d=".25" style="height:6px;width:360px;background:#FF6B1A;border-radius:3px;margin-top:10px"></div>
+ </div>
+
+ <div class="card" id="c1">
+  <div class="it label" data-d="0">FÜR WEN?</div>
+  <div class="it h1" data-d=".1">Teamkleidung<br>mit <em>eurem Logo</em></div>
+  <div class="pills">
+   <div class="it pill o" data-d=".8">Vereine</div>
+   <div class="it pill" data-d=".95">Guggenmusigen</div>
+   <div class="it pill" data-d="1.1">Turnvereine</div>
+   <div class="it pill o" data-d="1.4">Firmen</div>
+   <div class="it pill" data-d="1.55">Fussballclubs</div>
+   <div class="it pill" data-d="1.7">Jungwacht & Pfadi</div>
+  </div>
+  <div class="it" data-d="2.9" style="display:flex;align-items:center;gap:12px;margin-top:34px;color:#fff;font-weight:800;font-size:24px">
+   <svg width="34" height="34" viewBox="0 0 32 32" style="position:static"><rect width="32" height="32" rx="5" fill="#e3242b"/><rect x="13" y="6" width="6" height="20" fill="#fff"/><rect x="6" y="13" width="20" height="6" fill="#fff"/></svg>
+   In der ganzen Schweiz
+  </div>
+ </div>
+
+ <div class="card" id="c2">
+  <div class="it label" data-d="0">SORTIMENT</div>
+  <div class="tiles3">
+   <div class="it tile3 panel" data-w="Hoodies"><svg width="62" height="56" viewBox="0 0 96 86" style="position:static"><path d="M30 8 Q48 26 66 8 L88 22 L80 44 L72 40 L72 82 L24 82 L24 40 L16 44 L8 22 Z" fill="#2d3a55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M34 8 Q48 34 62 8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="48" cy="46" r="6" fill="#FF6B1A"/></svg>Hoodies</div>
+   <div class="it tile3 panel" data-w="T-Shirts"><svg width="62" height="56" viewBox="0 0 96 86" style="position:static"><path d="M32 8 Q48 20 64 8 L90 24 L80 42 L70 36 L70 82 L26 82 L26 36 L16 42 L6 24 Z" fill="#2d3a55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><circle cx="48" cy="40" r="6" fill="#FF6B1A"/></svg>T-Shirts</div>
+   <div class="it tile3 panel" data-w="Polos"><svg width="62" height="56" viewBox="0 0 96 86" style="position:static"><path d="M32 8 L48 18 L64 8 L90 24 L80 42 L70 36 L70 82 L26 82 L26 36 L16 42 L6 24 Z" fill="#2d3a55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M32 8 L40 24 L48 18 L56 24 L64 8" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><circle cx="60" cy="44" r="5" fill="#FF6B1A"/></svg>Polos</div>
+   <div class="it tile3 panel" data-w="Jacken"><svg width="62" height="56" viewBox="0 0 96 86" style="position:static"><path d="M30 6 L48 14 L66 6 L88 20 L84 82 L12 82 L8 20 Z" fill="#2d3a55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><line x1="48" y1="14" x2="48" y2="82" stroke="#fff" stroke-width="3"/><circle cx="62" cy="40" r="5" fill="#FF6B1A"/></svg>Jacken</div>
+   <div class="it tile3 panel" data-w="Caps"><svg width="62" height="56" viewBox="0 0 96 86" style="position:static"><path d="M14 58 Q14 20 48 18 Q80 20 80 58 Z" fill="#2d3a55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M60 58 H92 Q92 68 72 68 H52 Z" fill="#2d3a55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><circle cx="46" cy="40" r="6" fill="#FF6B1A"/></svg>Caps</div>
+   <div class="it tile3 panel" data-w="Traineranzüge"><svg width="62" height="56" viewBox="0 0 96 86" style="position:static"><path d="M30 6 L48 14 L66 6 L88 20 L84 82 L12 82 L8 20 Z" fill="#2d3a55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><line x1="48" y1="14" x2="48" y2="82" stroke="#fff" stroke-width="3"/><path d="M14 24 L12 80 M82 24 L84 80" stroke="#FF6B1A" stroke-width="4"/></svg>Trainer</div>
+   <div class="it tile3 panel" data-w="Taschen"><svg width="62" height="56" viewBox="0 0 96 86" style="position:static"><path d="M34 32 Q34 10 48 10 Q62 10 62 32" fill="none" stroke="#fff" stroke-width="3"/><path d="M14 32 H82 L76 82 H20 Z" fill="#2d3a55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><circle cx="48" cy="56" r="6" fill="#FF6B1A"/></svg>Taschen</div>
+   <div class="it tile3 more" data-w="vieles">+ vieles mehr</div>
+  </div>
+  <div class="it marquee" data-w="vieles"><div class="mtrack" id="mtrack"></div></div>
+ </div>
+
+ <div class="card" id="c3">
+  <div class="it label" data-d="0">VEREDELUNG</div>
+  <div class="vrow">
+   <div class="it vpanel panel" data-d=".05">
+    <svg width="190" height="200" viewBox="0 0 190 200" style="position:static">
+     <path d="M62 20 Q95 44 128 20 L176 48 L160 84 L142 74 L142 190 L48 190 L48 74 L30 84 L14 48 Z" fill="#2d3a55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+     <circle cx="95" cy="104" r="26" fill="none" stroke="#3a4766" stroke-width="5"/>
+     <circle id="stitch" cx="95" cy="104" r="26" fill="none" stroke="#FF6B1A" stroke-width="5" stroke-dasharray="5 4" stroke-dashoffset="0" pathLength="164"/>
+     <g id="needle"><line x1="0" y1="-60" x2="0" y2="0" stroke="#e9edf5" stroke-width="3"/><circle cx="0" cy="-56" r="3" fill="none" stroke="#e9edf5" stroke-width="2"/></g>
+    </svg>
+    <div class="vlab">BESTICKT</div>
+   </div>
+   <div class="it vor" data-w="oder">oder</div>
+   <div class="it vpanel panel" data-w="bedruckt">
+    <svg width="190" height="200" viewBox="0 0 190 200" style="position:static">
+     <defs><clipPath id="pclip"><rect id="printclip" x="0" y="60" width="190" height="0"/></clipPath></defs>
+     <path d="M62 20 Q95 44 128 20 L176 48 L160 84 L142 74 L142 190 L48 190 L48 74 L30 84 L14 48 Z" fill="#2d3a55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+     <g clip-path="url(#pclip)"><circle cx="95" cy="104" r="28" fill="#FF6B1A"/><text x="95" y="150" text-anchor="middle" font-family="Inter Display" font-weight="900" font-size="15" fill="#fff" letter-spacing="1">CREWTEX</text></g>
+     <rect id="squeegee" x="30" y="60" width="130" height="7" rx="3" fill="#e9edf5"/>
+    </svg>
+    <div class="vlab">BEDRUCKT</div>
+   </div>
+  </div>
+ </div>
+
+ <div class="card" id="c4">
+  <div class="it label" data-d="0">GRÖSSEN SAMMELN</div>
+  <div class="it chat panel" data-d=".05">
+   <div class="bub">Welche Grösse nimmt Noah??</div>
+   <div class="bub r">M oder L?</div>
+   <div class="bub">Wer fehlt noch alles??</div>
+   <div class="it stamp" data-w="WhatsApp-Chaos">CHAOS</div>
+  </div>
+  <div class="it form panel" data-w="Link">
+   <div style="color:#FF7A1A;font-weight:800;font-size:14px;letter-spacing:.18em;margin-bottom:6px">DEIN GRÖSSEN-LINK</div>
+   <div class="frow it" data-d="1.2">Lea<span class="size">M<span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" style="position:static"><path d="M2 7 L6 11 L12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span></span></div>
+   <div class="frow it" data-d="1.45">Noah<span class="size">L<span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" style="position:static"><path d="M2 7 L6 11 L12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span></span></div>
+   <div class="frow it" data-d="1.7">Mia<span class="size">S<span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" style="position:static"><path d="M2 7 L6 11 L12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span></span></div>
+   <div class="frow it" data-d="1.95">Jan<span class="size">XL<span class="ck"><svg width="14" height="14" viewBox="0 0 14 14" style="position:static"><path d="M2 7 L6 11 L12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span></span></div>
+  </div>
+ </div>
+
+ <div class="card" id="c5">
+  <div class="it label" data-d="0">LIEFERUNG</div>
+  <div class="it h1" data-d=".08">Einzeln <em>verpackt</em></div>
+  <div class="pkgs" id="pkgs"></div>
+  <div class="it muted" data-w="Name" style="margin-top:26px">Mit Name und Grösse. Direkt verteilbar.</div>
+ </div>
+
+ <div class="card" id="c6">
+  <div class="it label" data-d="0">JETZT ANFRAGEN</div>
+  <div class="it h1" data-d=".08" style="font-size:52px">Lust auf ein<br>unverbindliches<br><em>Angebot?</em></div>
+  <div class="checks">
+   <div class="it chk" data-d=".9"><span class="ck" style="width:30px;height:30px"><svg width="14" height="14" viewBox="0 0 14 14" style="position:static"><path d="M2 7 L6 11 L12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span>Kostenlos anfragen</div>
+   <div class="it chk" data-d="1.2"><span class="ck" style="width:30px;height:30px"><svg width="14" height="14" viewBox="0 0 14 14" style="position:static"><path d="M2 7 L6 11 L12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span>Persönliche Beratung</div>
+  </div>
+ </div>
+
+ <div class="card" id="c7">
+  <div class="it h1" data-d="0" style="font-size:42px">Schreib jetzt<br>in die <em>Kommentare</em></div>
+  <div class="it igbox panel" data-d=".25">
+   <div class="ighead">Kommentare</div>
+   <div class="igposted" id="igposted"><div class="av"></div><div><div class="igname">du</div><div class="igtext">TEAM</div></div><svg id="heart" width="22" height="22" viewBox="0 0 24 24" style="position:static;margin-left:auto"><path d="M12 21 C5 15 2 12 2 8 A5 5 0 0 1 12 6 A5 5 0 0 1 22 8 C22 12 19 15 12 21Z" fill="#ff3b5c"/></svg></div>
+   <div class="iginput"><div class="av"></div><div class="igfield"><span id="typed"></span><span id="caret">|</span></div><div class="igpost" id="igpost">Posten</div></div>
+  </div>
+  <div class="it" data-d=".6" style="margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:6px">
+   <div style="color:#fff;font-weight:800;font-size:26px">@crewtex.ch</div>
+   <div style="color:#9aa6bd;font-weight:700;font-size:19px">Wir melden uns bei dir</div>
+  </div>
+ </div>
+</div>
+
+<div id="sub"></div>
+</div>
+
+<script>
+const TL = __TIMELINE__;
+document.getElementById('qrpath').setAttribute('d', TL.qrPath);
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+let seed=7;function rnd(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646}
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const prog=(t,a,b)=>clamp((t-a)/(b-a));
+const lerp=(a,b,p)=>a+(b-a)*p;
+const eOut=p=>1-Math.pow(1-p,3);
+const eIn=p=>p*p*p;
+const eInOut=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+const eBack=p=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
+
+const S=TL.segStarts; const T1=S[1], T2=S[2], T3=S[3];
+const HUD0 = T2 + 3.55;   // Schnitt in die Drohnen-Kamera
+
+// Gras
+for(let i=0;i<26;i++){const x=rnd()*540,y=620+rnd()*320;el('path',{d:`M${x} ${y} l-4 -10 M${x} ${y} l0 -13 M${x} ${y} l5 -9`},$('grass'))}
+// Räder
+for(let x=207;x<=460;x+=50)el('circle',{cx:x,cy:671,r:19},$('wheels'));
+
+// Sticker-Plätze
+const slots=[];
+for(let y of [603,624])for(let x=204;x<=448;x+=27)slots.push([x,y,22]);
+for(let y of [550,571])for(let x=268;x<=372;x+=26)slots.push([x,y,21]);
+for(let x=188;x<=462;x+=27)slots.push([x,650,20]);
+for(let x=405;x<=500;x+=24)slots.push([x,559,15]);
+slots.push([302,536,10]);slots.push([322,536,10]);
+// zufällige Reihenfolge
+for(let i=slots.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[slots[i],slots[j]]=[slots[j],slots[i]]}
+const N=slots.length;
+const stickers=slots.map((s,i)=>{
+ const land=0.9+5.3*Math.pow(i/(N-1),0.75);
+ const ang=rnd()*Math.PI*2; const dist=520+rnd()*200;
+ const g=el('g',{},$('stickers'));
+ el('use',{href:'#qr',x:-s[2]/2,y:-s[2]/2,width:s[2],height:s[2]},g);
+ return {g,x:s[0]+s[2]/2,y:s[1]+s[2]/2,land,fx:Math.cos(ang)*dist,fy:Math.sin(ang)*dist-200,rot:(rnd()-.5)*14,spin:(rnd()-.5)*540};
+});
+window.STICKER_LANDS=stickers.map(s=>s.land);
+
+// Drohnen
+function makeDrone(){
+ const g=el('g',{},$('drones'));
+ el('line',{x1:-28,y1:-12,x2:28,y2:-12,stroke:'#2b2f36','stroke-width':4},g);
+ el('rect',{x:-16,y:-10,width:32,height:16,rx:5,fill:'#2b2f36'},g);
+ el('rect',{x:-6,y:5,width:12,height:7,rx:2,fill:'#3d434d'},g);
+ el('circle',{cx:0,cy:12,r:3.5,fill:'#59ffb0'},g);
+ el('circle',{cx:10,cy:-3,r:2.5,fill:'#ff3b3b'},g);
+ const r1=el('ellipse',{cx:-28,cy:-15,rx:15,ry:3,fill:'#aab3bd',opacity:.8},g);
+ const r2=el('ellipse',{cx:28,cy:-15,rx:15,ry:3,fill:'#aab3bd',opacity:.8},g);
+ g.style.display='none';return {g,r1,r2};
+}
+const drones=[makeDrone(),makeDrone(),makeDrone()];
+const bombs=[0,1].map(()=>{const b=el('g',{},$('bombs'));el('rect',{x:-4,y:-9,width:8,height:18,rx:4,fill:'#1d2026'},b);el('rect',{x:-5,y:-11,width:10,height:4,fill:'#c0392b'},b);b.style.display='none';return b});
+const fires=[];for(let i=0;i<9;i++){const c=el('circle',{r:1,fill:'url(#fire)'},$('fireballs'));fires.push({c,x:200+rnd()*270,y:560+rnd()*110,r:40+rnd()*55,d:rnd()*.35})}
+const smokes=[];for(let i=0;i<12;i++){const c=el('circle',{r:1,fill:i%2?'#6b6f76':'#8a8e95'},$('smoke'));smokes.push({c,x:190+rnd()*300,y:560+rnd()*100,r:35+rnd()*45,d:.15+rnd()*.5,vy:-(40+rnd()*60)})}
+
+// Pakete
+['LEA • M','NOAH • L','MIA • S'].forEach((lab,i)=>{
+ const d=document.createElement('div');d.className='it pkg';d.dataset.d=(0.7+i*.35).toFixed(2);
+ d.innerHTML=`<svg width="132" height="190" viewBox="0 0 132 190" style="position:static"><rect x="6" y="14" width="120" height="170" rx="10" fill="rgba(210,225,245,.16)" stroke="rgba(255,255,255,.35)" stroke-width="2"/><rect x="6" y="14" width="120" height="18" rx="6" fill="rgba(255,255,255,.22)"/><rect x="24" y="52" width="84" height="70" rx="8" fill="#FF6B1A"/><rect x="24" y="52" width="84" height="12" rx="4" fill="#e55a10"/><circle cx="66" cy="88" r="7" fill="#fff"/><rect x="18" y="134" width="96" height="34" rx="6" fill="#fff"/><text x="66" y="157" text-anchor="middle" font-family="Inter" font-weight="900" font-size="15" fill="#0a1020">${lab}</text></svg>`;
+ $('pkgs').appendChild(d);
+});
+
+// Karten
+const CS=TL.cardStarts; // 8 Satz-Starts im Pitch
+const cards=CS.map((_,i)=>({el:$('c'+i),items:[...$('c'+i).querySelectorAll('.it')]}));
+const cardStart=CS.slice();
+const cardEnd=CS.slice(1).concat([999]);
+const seg3=TL.subs.filter(x=>x.seg===3);
+function wordTime(w,after){const n=w.toLowerCase();const h=seg3.find(x=>x.t0>=after-0.01&&x.text.toLowerCase().split(' ').some(p=>p.replace(/[^a-zäöü-]/g,'')===n.replace(/[^a-zäöü-]/g,'')));return h?h.t0:after}
+cards.forEach((c,i)=>c.items.forEach(it=>{if(it.dataset.w){it.dataset.d=Math.max(0,wordTime(it.dataset.w,cardStart[i])-cardStart[i]+0.02).toFixed(2)}}));
+// Laufband mit weiteren Artikeln
+['Westen','Softshells','Mützen','Schürzen','Sweatjacken','Shorts','Rucksäcke','Badetücher','Socken','Turnbeutel','Fleece','Trikots','Westen','Softshells','Mützen','Schürzen','Sweatjacken','Shorts'].forEach(w=>{const sp=document.createElement('span');sp.textContent=w;$('mtrack').appendChild(sp)});
+for(let i=0;i<8;i++){$('pdots').appendChild(document.createElement('i'))}
+const dots=[...$('pdots').children];
+const HL=/^(QR-CODES?|PANZER|DROHNEN?|CREWTEX|SCHWEIZ|LINK|TEAM|ANGEBOT|LOGO|WHATSAPP-CHAOS|GRÖSSEN|SCANNT|GRÖSSE|VERPACKT)$/i;
+function subHTML(text){return text.split(' ').map(w=>HL.test(w.replace(/[^\wäöüÄÖÜ-]/g,''))?`<b>${w}</b>`:w).join(' ')}
+
+function render(t){
+ const world=$('world'),hud=$('hud'),pitch=$('pitch');
+ const inPitch=t>=T3, inHud=!inPitch&&t>=HUD0;
+ world.style.display=(inPitch||inHud)?'none':'block';
+ hud.style.display=inHud?'block':'none';
+ pitch.style.display=inPitch?'block':'none';
+
+ // ---------- Welt ----------
+ if(!inPitch&&!inHud){
+  let sc=1,cx=300,cy=640,shx=0,shy=0;
+  if(t<T1){sc=lerp(1.06,1.0,eOut(prog(t,0,2)))}
+  else if(t<T2){sc=lerp(1.0,0.84,eInOut(prog(t,T1,T1+0.9)));
+   const ex=prog(t,T1+2.55,T1+3.4); if(ex>0&&ex<1){shx=(rnd()-.5)*16*(1-ex);shy=(rnd()-.5)*16*(1-ex)}}
+  else {sc=lerp(1.0,1.0,0); const z=prog(t,HUD0-0.4,HUD0); sc=1+eIn(z)*1.6; cy=470;cx=330}
+  $('cam').setAttribute('transform',`translate(${cx+shx} ${cy+shy}) scale(${sc}) translate(${-cx} ${-cy})`);
+  $('cloud').setAttribute('transform',`translate(${t*4} 0)`);
+  $('cloud2').setAttribute('transform',`translate(${-t*3} 0)`);
+
+  // Soldat-Arm zeigt
+  const armA = t<T1 ? lerp(10,-14,eOut(prog(t,0.3,0.9))) : 18;
+  $('arm').setAttribute('transform',`rotate(${armA} 108 603)`);
+  $('soldier').style.display = (t<T1)?'block':(t<T2?'block':'block');
+
+  // Sticker
+  const showSt = t<T1 || t>=T2;
+  stickers.forEach(s=>{
+   if(!showSt){s.g.style.display='none';return}
+   let lt = t<T1 ? t : (s.land + 100); // in Szene 3 alle schon drauf
+   if(t>=T2) lt = 100;
+   const p=prog(lt,s.land-0.32,s.land);
+   if(p<=0){s.g.style.display='none';return}
+   s.g.style.display='block';
+   const e=eOut(p);
+   const x=s.x+s.fx*(1-e), y=s.y+s.fy*(1-e);
+   const sq = prog(lt,s.land,s.land+0.12);
+   let scl = lerp(2.4,1,e); if(sq>0&&sq<1) scl = 1+0.18*Math.sin(sq*Math.PI);
+   const r = s.rot + s.spin*(1-e);
+   s.g.setAttribute('transform',`translate(${x} ${y}) rotate(${r}) scale(${scl})`);
+  });
+
+  // Drohnen + Explosion (Szene 2)
+  const burn = t>=T1+2.6 && t<T2;
+  $('tank').style.filter = burn ? `brightness(${lerp(1,0.42,prog(t,T1+2.6,T1+3.0))}) saturate(.6)` : 'none';
+  $('tank').setAttribute('transform', burn ? `rotate(${lerp(0,-2.5,prog(t,T1+2.6,T1+2.8))} 330 700)` : '');
+  drones.forEach(d=>d.g.style.display='none');
+  const flick = Math.floor(t*30)%2;
+  function placeDrone(d,x,y,rot){d.g.style.display='block';d.g.setAttribute('transform',`translate(${x} ${y}) rotate(${rot})`);
+   d.r1.setAttribute('rx',flick?15:9);d.r2.setAttribute('rx',flick?9:15)}
+  if(t>=T1&&t<T2){
+   const p1=eOut(prog(t,T1+0.2,T1+1.4)), p2=eOut(prog(t,T1+0.5,T1+1.7));
+   const leave=eIn(prog(t,T1+2.6,T1+3.6));
+   placeDrone(drones[0],lerp(620,380,p1)+leave*300,lerp(230,400,p1)+Math.sin(t*5)*5-leave*300,lerp(-18,0,p1)+leave*20);
+   placeDrone(drones[1],lerp(-80,240,p2)-leave*300,lerp(180,380,p2)+Math.sin(t*5+1)*5-leave*300,lerp(18,0,p2)-leave*20);
+   const db=prog(t,T1+1.9,T1+2.6);
+   [[380,415],[240,395]].forEach((o,i)=>{const b=bombs[i];
+    if(db>0&&db<1){b.style.display='block';const e=eIn(db);b.setAttribute('transform',`translate(${lerp(o[0],330+(i?-50:40),db)} ${lerp(o[1],600,e)})`)} else b.style.display='none'});
+   const ex=t-(T1+2.6);
+   fires.forEach(f=>{const p=prog(ex,f.d,f.d+0.45),q=prog(ex,f.d+0.6,f.d+1.3);
+    if(ex<f.d||q>=1){f.c.setAttribute('r',0);return}
+    f.c.setAttribute('cx',f.x);f.c.setAttribute('cy',f.y-q*40);f.c.setAttribute('r',f.r*eBack(p)*(1-q*0.6));f.c.setAttribute('opacity',1-q)});
+   smokes.forEach(s=>{const p=prog(ex,s.d+0.3,s.d+1.6);
+    if(p<=0){s.c.setAttribute('r',0);return}
+    s.c.setAttribute('cx',s.x);s.c.setAttribute('cy',s.y+s.vy*p*1.4);s.c.setAttribute('r',s.r*eOut(p));s.c.setAttribute('opacity',.85*(1-p*0.4))});
+   $('flash').setAttribute('opacity', ex>0 ? Math.max(0,0.85-ex*4) : 0);
+  } else {
+   bombs.forEach(b=>b.style.display='none');fires.forEach(f=>f.c.setAttribute('r',0));smokes.forEach(s=>s.c.setAttribute('r',0));
+   $('flash').setAttribute('opacity', t>=T2 ? Math.max(0,(t-(HUD0-0.15))/0.15) : 0);
+  }
+
+  // Szene 3: Scan
+  if(t>=T2){
+   const p=eOut(prog(t,T2+0.05,T2+1.1));
+   const dx=lerp(280,330,p), dy=lerp(-60,335,p)+Math.sin(t*4)*4;
+   placeDrone(drones[2],dx,dy,lerp(10,0,p));
+   const b=prog(t,T2+1.15,T2+1.45);
+   $('beam').setAttribute('opacity',b);
+   $('beampoly').setAttribute('points',`${dx},${dy+14} 168,${612} 520,${612}`);
+   const sy = 540 + (Math.sin((t-T2)*3.2)*0.5+0.5)*150;
+   $('scanline').setAttribute('y',sy);$('scanglow').setAttribute('y',sy-12);
+  } else $('beam').setAttribute('opacity',0);
+ }
+
+ // ---------- HUD ----------
+ if(inHud){
+  const h=t-HUD0;
+  $('hudpan').setAttribute('transform',`translate(${-h*12} ${-h*18}) scale(${1+h*0.02})`);
+  const r=eOut(prog(h,0.1,0.9)); const sz=lerp(330,190,r);
+  const locked=h>0.9;
+  $('ret').setAttribute('x',270-sz/2);$('ret').setAttribute('y',480-sz/2);$('ret').setAttribute('width',sz);$('ret').setAttribute('height',sz);
+  $('ret').setAttribute('stroke',locked?'#FF6B1A':'#fff');$('ret').setAttribute('stroke-width',locked?6:4);
+  $('found').setAttribute('opacity',locked?1:0);
+  $('found').setAttribute('transform',`translate(0 ${lerp(10,0,eOut(prog(h,0.9,1.1)))})`);
+  $('rec').setAttribute('opacity',Math.floor(h*2)%2?0.2:1);
+  $('alt').textContent='HÖHE '+(49.2-h*0.6).toFixed(1).replace('.',',')+' M';
+  const pp=eBack(prog(h,1.75,2.1));
+  $('popup').setAttribute('opacity',prog(h,1.75,1.95));
+  $('popup').setAttribute('transform',`translate(270 715) scale(${lerp(.85,1,pp)}) translate(-270 -715)`);
+  $('pbar').setAttribute('width',360*eInOut(prog(h,2.1,3.6)));
+ }
+
+ // ---------- Pitch ----------
+ if(inPitch){
+  const pt=t-T3;
+  $('pgrid').style.transform=`translate(${(pt*10)%40}px ${(pt*14)%40}px)`;
+  $('glow1').style.transform=`translate(${Math.sin(pt*.6)*30}px ${Math.cos(pt*.5)*30}px)`;
+  $('glow2').style.transform=`translate(${Math.cos(pt*.7)*30}px ${Math.sin(pt*.4)*30}px)`;
+  $('phead').style.opacity = prog(t,CS[1],CS[1]+0.4);
+  let active=0; CS.forEach((c,i)=>{if(t>=c-0.08)active=i});
+  dots.forEach((d,i)=>{d.style.background=i<=active?'#FF6B1A':'rgba(255,255,255,.15)';d.style.width=(i===active?34:22)+'px'});
+  $('pdots').style.opacity=prog(t,CS[1],CS[1]+0.4);
+  cards.forEach((c,i)=>{
+   const a=cardStart[i]-0.1, b=cardEnd[i]-0.08;
+   if(t<a-0.01||t>b+0.3){c.el.style.opacity=0;c.el.style.display='none';return}
+   c.el.style.display='flex';
+   const inn=eOut(prog(t,a,a+0.35)), out=eIn(prog(t,b,b+0.28));
+   const zoom=1+0.035*prog(t,a,b);
+   c.el.style.opacity=Math.min(inn,1-out);
+   c.el.style.transform=`translateX(${(1-inn)*90-out*110}px) scale(${zoom})`;
+   c.items.forEach((it,k)=>{
+    const d=parseFloat(it.dataset.d||0);
+    const p=prog(t,a+d,a+d+0.42);
+    const e=eBack(p);
+    it.style.opacity=clamp(p*1.8);
+    if(it.classList.contains('stamp')) it.style.transform=`rotate(-12deg) scale(${lerp(2.4,1,eOut(p))})`;
+    else if(it.classList.contains('tile3')||it.classList.contains('pkg')||it.classList.contains('vpanel')) it.style.transform=`translateY(${lerp(40,0,e)+Math.sin(t*2.2+k)*3*p}px) scale(${lerp(.6,1,e)}) rotate(${lerp(-6,0,e)}deg)`;
+    else it.style.transform=`translateY(${lerp(30,0,e)}px) scale(${lerp(.9,1,e)})`;
+   });
+  });
+  // Laufband
+  $('mtrack').style.transform=`translateX(${-((t-CS[2])*55)}px)`;
+  // Sticken / Drucken
+  const st=prog(t,CS[3]+0.3,CS[3]+1.6);
+  $('stitch').setAttribute('stroke-dasharray',`${164*st} 999`);
+  const ang=st*Math.PI*2-Math.PI/2; const bob=Math.abs(Math.sin(t*28))*8;
+  $('needle').setAttribute('transform',`translate(${95+26*Math.cos(ang)} ${104+26*Math.sin(ang)-bob})`);
+  $('needle').style.opacity=(st>0&&st<1)?1:0;
+  const pr=eInOut(prog(t,wordTime('bedruckt',CS[3])+0.15,wordTime('bedruckt',CS[3])+1.0));
+  $('printclip').setAttribute('height',110*pr);
+  $('squeegee').setAttribute('y',60+110*pr);
+  $('squeegee').style.opacity=(pr>0&&pr<1)?1:0;
+  // Kommentar tippen
+  const TT=TL.teamTime; const word='TEAM'; const nch=Math.floor(clamp((t-TT+0.15)/0.11,0,4));
+  $('typed').textContent=word.slice(0,nch);
+  $('caret').style.opacity=(Math.floor(t*3)%2&&t<TT+0.75)?1:0;
+  const posted=prog(t,TT+0.75,TT+1.05);
+  $('igpost').style.color=nch>0?'#FF6B1A':'#4b5a78';
+  $('igposted').style.opacity=posted; $('igposted').style.transform=`translateY(${lerp(14,0,eOut(posted))}px)`;
+  if(posted>=1) $('typed').textContent='';
+  const hp=prog(t,TT+1.4,TT+1.7); $('heart').style.transform=`scale(${hp>0?eBack(hp):0})`;
+  const ib=$('c7').querySelector('.igbox'); const pulse=t>TT?0.5+0.5*Math.sin((t-TT)*6):0;
+  ib.style.boxShadow=`0 0 ${18+26*pulse}px rgba(255,107,26,${.25+.3*pulse})`;
+ }
+
+ // ---------- Untertitel ----------
+ const sub=$('sub'); const cur=TL.subs.find(s=>t>=s.t0&&t<s.t1+0.05);
+ if(cur){
+  sub.style.display='block';
+  if(sub.dataset.k!==cur.t0+''){sub.dataset.k=cur.t0+'';sub.innerHTML=subHTML(cur.text)}
+  const p=prog(t,cur.t0,cur.t0+0.14);
+  sub.style.transform=`scale(${lerp(1.18,1,eOut(p))})`;
+  sub.style.top = inPitch ? '820px' : (inHud ? '170px' : (t<T1?'300px':'270px'));
+  sub.style.fontSize = inPitch ? '34px' : '40px';
+ } else sub.style.display='none';
+}
+window.render=render;
+render(0);
+</script>
+</body></html>
