@@ -1,0 +1,7 @@
+add('fx',impact(),3.1,.5)
+add('fx',tick(),5.4,1.0); add('fx',ding(93),5.5,.7)
+add('fx',impact(),6.4,.6)
+for t in (9.6,10.3,11.0): add('fx',tick(),t,.8); add('fx',ding(88),t+.1,.4)
+for t in (13.7,14.4,15.1): add('fx',thud(),t,.6)
+for k in range(4): add('fx',tick(),19.7+k*.2,.8)
+add('fx',ding(93),20.55,.6)
