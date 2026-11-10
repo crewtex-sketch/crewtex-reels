@@ -6,7 +6,9 @@ Problem zeigen -> Lösung Crewtex (Grössen per Link, einzeln verpackt mit Name,
 Preisbeispiel nur "Hoodie mit Stick ab ca. CHF 38" / "T-Shirt mit Druck ab ca. CHF 23" ->
 Endszene: Logo, Kommentarfeld tippt "TEAM", "Schreib TEAM in die Kommentare", Pill crewtex.ch.
 
-Beispiele: reel45/build_r6.py (Vereine, WhatsApp-Chaos) und reel45/build_r7.py (Firmen, "Wem öffnest du die Tür?").
+Beispiele: reel45/build_r6.py (Vereine, WhatsApp-Chaos), build_r7b.py (Firmen, Tür), build_r8.py (Stickdatei, Neugier-Frage), build_r9.py (Spital-Farben, Neugier-Frage).
+
+ERKENNTNIS 10.11.: Reels mit einer Neugier-Frage oder kurzen wahren Geschichte am Anfang (Panzer-QR: Skip 32 %) laufen viel besser als reine Text-Animationen (Skip 60 bis 70 %). Darum jedes Reel mit einer "Warum ...?"-Frage oder einem überraschenden Fakt starten, Szenenschnitte bei 3.0 / 8.6 / 13.0 / 17.4 s.
 Jedes neue Reel: eigenes Konzept, eigene Szenen; nur das Gerüst (common.py: words, endlogo, page, Animationen) wiederverwenden.
 
 Ablauf (WORK = dieser Ordner, Pfade relativ dazu):
@@ -14,8 +16,8 @@ Ablauf (WORK = dieser Ordner, Pfade relativ dazu):
 2. python3 reel45/build_rX.py
 3. Testbilder: node reel45/rec45.js $PWD/reel45/rX 22.5 1,5,10,15,21  -> test_*.png ansehen (nichts abgeschnitten/überlappend)
 4. Alle Frames: node reel45/rec45.js $PWD/reel45/rX 22.5
-5. Musik: in music_rx.py einen Block für 'rX' anlegen (ROOTS/RIFF/CUTS/END + FX), dann
-   python3 reel45/music_rx.py rX 22.5 130 reel45/rX/music.wav
+5. Musik (Pop, Maels Wunsch): python3 reel45/music_pop.py rX 22.5 124 reel45/rX/music.wav
+   (Drops bei 3.0 und 5.45 s, Ende 17.4 s; passt zu den Szenenschnitten oben)
 6. ffmpeg -y -framerate 30 -i reel45/rX/f_%04d.png -i reel45/rX/music.wav -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -b:a 192k -shortest -af loudnorm=I=-14:TP=-1.5:LRA=11 reel.mp4
 
 Regeln: keine Emojis, echte Umlaute, ss statt ß, keine erfundenen Kunden oder Statistiken, Buchrain und Jungwacht nie erwähnen.
