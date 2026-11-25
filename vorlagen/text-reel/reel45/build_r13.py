@@ -3,21 +3,26 @@ exec(open(__file__.replace('build_r13.py', 'common.py')).read())
 STROKE = 'stroke="#121110" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"'
 
 def prez(w=420, extra=''):
-    # Strichmännchen mit Trompete
-    return f'''<svg viewBox="-60 0 520 560" width="{w*1.3:.0f}" height="{w*560/400:.0f}" style="overflow:visible">
- <g {STROKE}>
-  <circle cx="200" cy="110" r="62" fill="#fff"/>
-  <path d="M200 172 v190"/>
-  <path d="M200 362 l-70 150"/><path d="M200 362 l70 150"/>
-  <path d="M200 230 l-80 60 l40 40"/>
-  <path d="M200 230 l70 20 l40 10"/>
+    # OK-Praesident vor Festzelt mit Wimpelkette, Klemmbrett, Hand am Kopf
+    flags=''.join(f'<path d="M{x} {y} l18 0 l-9 26z" fill="{c}" stroke="#121110" stroke-width="4"/>' for x,y,c in [(-40,30,"#FF5A1F"),(10,44,"#FFD23F"),(60,54,"#3A86FF"),(110,60,"#FF5A1F"),(330,60,"#FFD23F"),(380,54,"#3A86FF"),(430,44,"#FF5A1F"),(480,30,"#FFD23F")])
+    return f'''<svg viewBox="-60 -20 600 600" width="{w*1.45:.0f}" height="{w*600/400:.0f}" style="overflow:visible">
+ <path d="M-50 20 Q245 90 540 20" stroke="#121110" stroke-width="5" fill="none"/>{flags}
+ <g stroke="#121110" stroke-width="7" fill="none" stroke-linejoin="round" opacity=".35">
+  <path d="M330 520 L330 300 L420 220 L510 300 L510 520"/><path d="M380 520 L420 380 L460 520"/>
  </g>
- <g id="eyes"><circle cx="178" cy="102" r="8" fill="#121110"/><circle cx="222" cy="102" r="8" fill="#121110"/></g>
- <path id="mouth" d="M175 140 q25 -14 50 0" {STROKE} stroke-width="10"/>
- <g transform="translate(250,250)">
-  <ellipse cx="70" cy="10" rx="85" ry="16" fill="#FF5A1F" stroke="#121110" stroke-width="8"/>
-  <rect x="30" y="-48" width="24" height="52" rx="6" fill="#fff" stroke="#121110" stroke-width="7"/>
-  <rect x="80" y="-62" width="26" height="66" rx="6" fill="#fff" stroke="#121110" stroke-width="7"/>
+ <g {STROKE}>
+  <circle cx="200" cy="150" r="62" fill="#fff"/>
+  <path d="M200 212 v170"/>
+  <path d="M200 382 l-60 140"/><path d="M200 382 l60 140"/>
+  <path d="M200 250 l-70 -40 l-20 -70"/>
+  <path d="M200 250 l80 40 l20 40"/>
+ </g>
+ <g id="eyes"><circle cx="180" cy="142" r="8" fill="#121110"/><circle cx="220" cy="142" r="8" fill="#121110"/></g>
+ <ellipse cx="200" cy="185" rx="16" ry="20" fill="#121110"/>
+ <g transform="translate(272,300) rotate(-12)">
+  <rect x="0" y="0" width="80" height="104" rx="8" fill="#FF5A1F" stroke="#121110" stroke-width="7"/>
+  <rect x="22" y="-10" width="36" height="18" rx="5" fill="#fff" stroke="#121110" stroke-width="6"/>
+  <path d="M16 34 h48 M16 54 h48 M16 74 h30" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
  </g>
  {extra}
 </svg>'''
